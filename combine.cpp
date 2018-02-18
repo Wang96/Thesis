@@ -21,6 +21,8 @@ bool compare(std::string line1, std::string line2){
     if(cur1 > cur2) return true;
     else if (cur1 < cur2) return false;
   }
+  printf("sub1 line: %s\n", line1.c_str());
+  printf("sub2 line: %s\n", line2.c_str());
   printf("duplicate lines!!!!\n");
   return false;
 }

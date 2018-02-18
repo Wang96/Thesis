@@ -20,7 +20,6 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include <map>
 
 class Algorithm;
 
@@ -42,6 +41,7 @@ class Algorithm;
 */
 
 #include <cmath>
+#include <map>
 //#define max(x,y) (x > y? x:y)
 //#define min(x,y) (x < y? x:y)
 
@@ -56,8 +56,6 @@ void printArrayOfLinkedLists(std::vector<std::list<int>> const &listOfLists, int
 void destroyCliqueResults(std::list<std::list<int>> &cliques);
 
 std::vector<std::list<int>> readInGraphAdjList(int* n, int* m);
-
-std::vector<int> checkBoundary(int &n, int &m, std::string const &fileName);
 
 std::vector<std::list<int>> readInGraphAdjList(int &n, int &m, std::string const &fileName);
 std::vector<std::list<int>> readInGraphAdjListEdgesPerLine(int &n, int &m, std::string const &fileName);
@@ -101,7 +99,7 @@ bool IsMaximalClique(std::list<int> const &clique, std::vector<std::vector<int>>
 
 namespace Tools
 {
-    void printList(std::list<int> const &linkedList, std::map<int, int> &backmap, void (*printFunc)(int));
+    void printList(std::list<int> const &linkedList, std::map<int,int> &backmap, void (*printFunc)(int));
     void printInt(int integer);
     std::vector<int> ReadMetisOrdering(std::string const &filename);
     std::string GetTimeInSeconds(clock_t delta, bool brackets=true);

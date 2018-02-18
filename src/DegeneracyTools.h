@@ -1,24 +1,25 @@
 #ifndef _DJS_DEGENERACY_HELPER_H_
 #define _DJS_DEGENERACY_HELPER_H_
 
-/* 
-    This program is free software: you can redistribute it and/or modify 
-    it under the terms of the GNU General Public License as published by 
-    the Free Software Foundation, either version 3 of the License, or 
-    (at your option) any later version. 
- 
-    This program is distributed in the hope that it will be useful, 
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-    GNU General Public License for more details. 
- 
-    You should have received a copy of the GNU General Public License 
-    along with this program.  If not, see <http://www.gnu.org/licenses/> 
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <map>
 
 #include "Tools.h"
 #include <list>
@@ -99,6 +100,7 @@ int computeDegeneracy(std::vector<std::vector<int>> const &adjList, int size);
 NeighborList** computeDegeneracyOrderList(std::vector<std::list<int>> const &adjList, int size);
 
 NeighborListArray** computeDegeneracyOrderArray(std::vector<std::list<int>> const &adjList, int size);
+NeighborListArray** computeDegeneracyOrderArrayNew(std::vector<std::list<int>> const &adjList, int size, std::map<int,int> &degeneracyOrdering, std::map<int,int> &backmap, std::map<int,int> &remapping);
 
 std::vector<NeighborListArray> computeDegeneracyOrderArray(std::vector<std::vector<int>> &adjArray, int size);
 std::vector<NeighborListArray> computeDegeneracyOrderArrayWithArrays(std::vector<std::vector<int>> &adjArray, int size);

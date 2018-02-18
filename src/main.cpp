@@ -32,6 +32,7 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+#include <set>
 
 using namespace std;
 
@@ -116,7 +117,7 @@ int main(int argc, char** argv)
 
     map<string,string> mapCommandLineArgs;
 
-    ProcessCommandLineArgs(argc, argv, mapCommandLineArgs);
+    ProcessCommandLineArgs(argc-4, argv, mapCommandLineArgs);
 
     bool   const bQuiet(mapCommandLineArgs.find("--verbose") == mapCommandLineArgs.end());
     bool   const bOutputLatex(mapCommandLineArgs.find("--latex") != mapCommandLineArgs.end());
@@ -158,19 +159,13 @@ int main(int argc, char** argv)
     int m; // 2x number of edges
 
     vector<list<int>> adjacencyList;
-    vector<int> boundary;
     if (inputFile.find(".graph") != string::npos) {
         if (!bTableMode) cout << "Reading .graph file format. " << endl << flush;
         adjacencyList = readInGraphAdjListEdgesPerLine(n, m, inputFile);
-        boundary = checkBoundary(n, m, inputFile);
     } else {
         if (!bTableMode) cout << "Reading .edges file format. " << endl << flush;
         adjacencyList = readInGraphAdjList(n, m, inputFile);
-        boundary = checkBoundary(n, m, inputFile);
     }
-
-
-
 
     bool const bComputeAdjacencyMatrix(adjacencyList.size() < 20000);
     bool const bShouldComputeAdjacencyMatrix(name == "tomita");
@@ -213,40 +208,68 @@ int main(int argc, char** argv)
         }
         adjacencyList.clear(); // does this free up memory? probably some...
     }
+    //"../Subgraph/partition1.txt"
+    string partition_file = argv[argc-4];
+    ifstream instream(partition_file);
+    string line;
+    set<int> partition;
+    while(getline(instream,line)){
+      istringstream iss2(line);
+      int p;
+      while(iss2 >> p){
+        partition.insert(p);
+      }
+    }
+    //"../Subgraph/backtrack1.txt"
+    string backtrack_file = argv[argc-3];
+    ifstream instream1(backtrack_file);
+    map<int,int> backmap;
+    while(getline(instream1,line)){
+        istringstream iss(line);
+        int vx,num;
+        iss >> vx >> num;
+        backmap.insert(pair<int,int>(vx,num));
+        //printf("%d %d\n", n,m);
+    }
+    //"../Subgraph/remapping1.txt"
+    string remapping_file = argv[argc-2];
+    ifstream instream3(remapping_file);
+    map<int,int> remapping;
+    while(getline(instream3,line)){
+        istringstream iss3(line);
+        int vx,num;
+        iss3 >> vx >> num;
+        remapping.insert(pair<int,int>(vx,num));
+        //printf("%d %d\n", n,m);
+    }
 
-    // ifstream instream("../Subgraph/remapping0.txt");
-    // string line;
-    // map<int,int> remap;
-    // while(getline(instream,line)){
-    //     istringstream iss(line);
-    //     int n,m;
-    //     iss >> n >> m;
-    //     remap.insert(pair<int,int>(n,m));
-    //     //printf("%d %d\n", n,m);
-    // }
+    map<int,int> vertexOrdering;
+    string ordering_file = argv[argc-1];
+    ifstream instream2(ordering_file);
+    int vertex;
+    int order;
+
+    string line1;
+
+    while(std::getline(instream2,line1)){
+      istringstream iss1(line1);
+      //printf("current line: %s\n", line1.c_str());
+      iss1 >> vertex >> order;
+      //printf("vertex: %d, order: %d\n", vertex, order);
+      vertexOrdering.insert(pair<int,int>(order,vertex));
+    }
 
     if (name == "tomita") {
         pAlgorithm = new TomitaAlgorithm(adjacencyMatrix, n);
     } else if (name == "adjlist") {
         pAlgorithm = new AdjacencyListAlgorithm(adjacencyArray);
     } else if (name == "degeneracy") {
-        pAlgorithm = new DegeneracyAlgorithm(adjacencyList,boundary);//,remap);
+        pAlgorithm = new DegeneracyAlgorithm(adjacencyList,vertexOrdering,backmap,partition,remapping);
     } else if (name == "hybrid") {
         pAlgorithm = new HybridAlgorithm(adjacencyList);
     } else {
         cout << "ERROR: unrecognized algorithm name " << name << endl;
         return 1;
-    }
-
-    ifstream instream1("../Subgraph/backtrack1.txt");
-    string line;
-    map<int,int> backmap;
-    while(getline(instream1,line)){
-        istringstream iss(line);
-        int n,m;
-        iss >> n >> m;
-        backmap.insert(pair<int,int>(n,m));
-        //printf("%d %d\n", n,m);
     }
 
 #ifdef PRINT_CLIQUES_ONE_BY_ONE
@@ -324,17 +347,6 @@ int main(int argc, char** argv)
 
     ////if (options.verify) {
     ////}
-    // for(int const checkneighbor : adjacencyList[53]){
-    //   printf("adjacent of 107 %d\n", checkneighbor);
-    // }
-    // for(int const checkneighbor : adjacencyList[60]){
-    //   printf("adjacent of 129 %d\n", checkneighbor);
-    // }
-    // for(int const checkneighbor : adjacencyList[81]){
-    //   printf("adjacent of 186 %d\n", checkneighbor);
-    // }
-    //printf("28252: %d, 28318: %d\n", boundary[11986],boundary[12034]);
-
 
     return 0;
 }

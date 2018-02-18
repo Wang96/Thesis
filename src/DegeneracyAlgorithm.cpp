@@ -19,6 +19,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
+#include <map>
+#include <set>
 
 #include "Tools.h"
 #include <list>
@@ -94,11 +96,13 @@ using namespace std;
 ////static clock_t timeMovingXToP(0);
 ////static clock_t timeFillInPX(0);
 
-DegeneracyAlgorithm::DegeneracyAlgorithm(vector<list<int>> const &adjacencyList,vector<int> const &boundary)//, map<int,int> &remap)
+DegeneracyAlgorithm::DegeneracyAlgorithm(vector<list<int>> const &adjacencyList, map<int,int> &ordering, map<int,int> &backmap, set<int> &partition, map<int,int> &remapping)
  : Algorithm("degeneracy")
  , m_AdjacencyList(adjacencyList)
- , m_boundary(boundary)
- //, m_remap(remap)
+ , m_ordering(ordering)
+ , m_backmap(backmap)
+ , m_partition(partition)
+ , m_remapping(remapping)
 {
 }
 
@@ -108,7 +112,7 @@ DegeneracyAlgorithm::~DegeneracyAlgorithm()
 
 long DegeneracyAlgorithm::Run(list<list<int>> &cliques)
 {
-    return listAllMaximalCliquesDegeneracy(m_AdjacencyList, m_AdjacencyList.size(),m_boundary);//,m_remap);
+    return listAllMaximalCliquesDegeneracy(m_AdjacencyList, m_AdjacencyList.size(), m_ordering, m_backmap, m_partition, m_remapping);
 }
 
 
@@ -158,9 +162,8 @@ inline int findBestPivotNonNeighborsDegeneracy( int** pivotNonNeighbors, int* nu
     while(j<beginR)
     {
         int vertex = vertexSets[j];
-        //printf("find best pivot: vertex: %d\n", vertex);
         int numPotentialNeighbors = min(beginR - beginP, numNeighbors[vertex]);
-        //printf("numPotentialNeighbors: %d\n", numPotentialNeighbors);
+
         int numNeighborsInP = 0;
 
         int k = 0;
@@ -212,7 +215,6 @@ inline int findBestPivotNonNeighborsDegeneracy( int** pivotNonNeighbors, int* nu
     while(j<numPivotNeighbors)
     {
         int neighbor = neighborsInP[pivot][j];
-        //printf("neighbor in P: %d\n", neighbor);
         int neighborLocation = vertexLookup[neighbor];
 
         if(neighborLocation >= beginP && neighborLocation < beginR)
@@ -236,7 +238,6 @@ inline int findBestPivotNonNeighborsDegeneracy( int** pivotNonNeighbors, int* nu
     while(j<*numNonNeighbors)
     {
         int vertex = (*pivotNonNeighbors)[j];
-        //printf("move vertex %d\n", vertex);
 
         if(vertex == -1)
         {
@@ -301,9 +302,8 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
 {
 ////        clock_t startClock = clock();
         int vertexLocation = vertexLookup[vertex];
-        //printf("begin P: %d\n", vertexSets[*pBeginP]);
+
         (*pBeginR)--;
-        //printf("begin P afterwards: %d\n", vertexSets[*pbeginP]);
         vertexSets[vertexLocation] = vertexSets[*pBeginR];
         vertexLookup[vertexSets[*pBeginR]] = vertexLocation;
         vertexSets[*pBeginR] = vertex;
@@ -317,7 +317,6 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
         while(j<orderingArray[orderNumber]->laterDegree)
         {
             int neighbor = orderingArray[orderNumber]->later[j];
-            //printf("swap later neighbor of vertex %d into P section\n", neighbor);
             int neighborLocation = vertexLookup[neighbor];
 
             (*pNewBeginP)--;
@@ -388,13 +387,11 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
         while(j<*pNewBeginR)
         {
             int vertexInP = vertexSets[j];
-            //printf("fill in array of neighbor in P: %d\n", vertexInP);
 
             int k = 0;
             while(k<orderingArray[vertexInP]->laterDegree)
             {
                 int laterNeighbor = orderingArray[vertexInP]->later[k];
-                //printf("later Neighbor: %d\n", laterNeighbor);
                 int laterNeighborLocation = vertexLookup[laterNeighbor];
 
                 if(laterNeighborLocation >= *pNewBeginP && laterNeighborLocation < *pNewBeginR)
@@ -431,7 +428,7 @@ static unsigned long largestDifference(0);
 static unsigned long numLargeJumps;
 static unsigned long stepsSinceLastReportedClique(0);
 
-long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> const &adjList, int size, vector<int> const &boundary)//, map<int,int> &remap)
+long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> const &adjList, int size, map<int,int> &degeneracyOrdering, map<int,int> &backmap, set<int> &partition, map<int,int> &remapping)
 {
     // vertex sets are stored in an array like this:
     // |--X--|--P--|
@@ -445,12 +442,11 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
 
     // compute the degeneracy order
 ////    clock_t clockStart = clock();
-    NeighborListArray** orderingArray = computeDegeneracyOrderArray(adjList, size);
+    NeighborListArray** orderingArray = computeDegeneracyOrderArrayNew(adjList, size, degeneracyOrdering, backmap, remapping);
 ////    clock_t clockEnd = clock();
 ////    clock_t timeDegeneracyOrder = clockEnd - clockStart;
 
     int i = 0;
-    //printf("size %d\n", size);
 
     while(i<size)
     {
@@ -474,108 +470,66 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
     {
         int vertex = (int)orderingArray[i]->vertex;
 
+        if(find(partition.begin(), partition.end(), backmap[vertex+1]) != partition.end()){
+
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("%d ", vertex);
         #endif
 
-        // if(i == 53){
-        //   for(int const checkneighbor : adjList[53]){
-        //     printf("adjacent of 107 %d\n", checkneighbor);
-        //   }
-        //   int k = 0;
-        //   while(k < orderingArray[i]->laterDegree){
-        //     int laterNeighbor = orderingArray[i]->later[k];
-        //     printf("53's orderingArray later neighbor: %d\n", laterNeighbor);
-        //     k++;
-        //   }
-        //   k=0;
-        //   while(k < orderingArray[i]->earlierDegree){
-        //     int earlyNeighbor = orderingArray[i]->earlier[k];
-        //     printf("53's orderingArray earlier neighbor: %d\n", earlyNeighbor);
-        //     k++;
-        //   }
-        //
-        // }
-        // if(i == 1297){
-        //   for(int const checkneighbor : adjList[1297]){
-        //     printf("adjacent of 2692 %d\n", checkneighbor);
-        //   }
-        //   int k = 0;
-        //   while(k < orderingArray[i]->laterDegree){
-        //     int laterNeighbor = orderingArray[i]->later[k];
-        //     printf("1297's orderingArray later neighbor: %d\n", laterNeighbor);
-        //     k++;
-        //   }
-        //   k=0;
-        //   while(k < orderingArray[i]->earlierDegree){
-        //     int earlyNeighbor = orderingArray[i]->earlier[k];
-        //     printf("1297's orderingArray earlier neighbor: %d\n", earlyNeighbor);
-        //     k++;
-        //   }
-        //
-        // }
-
         // add vertex to partial clique R
         partialClique.push_back(vertex);
-        //printf("pushing back vertex %d\n", vertex);
 
         int newBeginX, newBeginP, newBeginR;
 
         // set P to be later neighbors and X to be be earlier neighbors
         // of vertex
-        bool onboundary = boundary[i];
-        // bool allboundary = true;
-        // int k = 0;
-        // while(k < orderingArray[i]->laterDegree){
-        //   int laterNeighbor = orderingArray[i]->later[k];
-        //   if(boundary[laterNeighbor] == 0){
-        //     allboundary = false;
-        //     break;
-        //   }
-        //   k++;
-        // }
-        // if(i==1297){
-        //   printf("1297: %d, 1370: %d, allboundary: %d\n", boundary[1297],boundary[1370],allboundary);
-        //
-        // }
-
-
-        //if(!allboundary){
-          fillInPandXForRecursiveCallDegeneracy( i, vertex,
-                                                 vertexSets, vertexLookup,
-                                                 orderingArray,
-                                                 neighborsInP, numNeighbors,
-                                                 &beginX, &beginP, &beginR,
-                                                 &newBeginX, &newBeginP, &newBeginR);
-          // onboundary = boundary[remap[vertexSets[newBeginR]]-1];
-          // printf("newBeginR %d, onboundary %d\n", newBeginR, onboundary);
-          // printf("beginR %d, onboundary %d\n", beginR, boundary[remap[beginR]-1]);
-        //}
-        //printf("2809 %d 2692 %d\n", boundary[1370], boundary[1297]);
+        fillInPandXForRecursiveCallDegeneracy( i, vertex,
+                                               vertexSets, vertexLookup,
+                                               orderingArray,
+                                               neighborsInP, numNeighbors,
+                                               &beginX, &beginP, &beginR,
+                                               &newBeginX, &newBeginP, &newBeginR);
 
         // recursively compute maximal cliques containing vertex, some of its
         // later neighbors, and avoiding earlier neighbors
-        //if(!onboundary){
-        //printf("inside\n");
+        // if(vertex == 3101){
+        //     printf("current node: %d\n", vertex);
+        //     int num;
+        //     for(num  = newBeginX; num < newBeginP; num++){
+        //         printf("set X: %d\n", vertexSets[num]);
+        //     }
+        //     for(num  = newBeginP; num < newBeginR; num++){
+        //         printf("set P: %d\n", vertexSets[num]);
+        //     }
+        // }
+        //
+        // if(vertex == 3151){
+        //     printf("current node: %d\n", vertex);
+        //     int num;
+        //     for(num  = newBeginX; num < newBeginP; num++){
+        //         printf("set X: %d\n", vertexSets[num]);
+        //     }
+        //     for(num  = newBeginP; num < newBeginR; num++){
+        //         printf("set P: %d\n", vertexSets[num]);
+        //     }
+        // }
 
         listAllMaximalCliquesDegeneracyRecursive(&cliqueCount,
                                                   partialClique,
                                                   vertexSets, vertexLookup,
                                                   neighborsInP, numNeighbors,
-                                                  newBeginX, newBeginP, newBeginR, onboundary, boundary);
-        //onboundary = boundary[remap[newBeginR]-1];
-        //printf("list cliques: X %d P %d R %d onboundary %d\n", newBeginX, newBeginP, newBeginR, onboundary);
-      //}
+                                                  newBeginX, newBeginP, newBeginR);
 
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("b ");
         #endif
       //}
+
         beginR = beginR + 1;
-      //}
 
         partialClique.pop_back();
-        //printf("pop back %d\n", vertex);
+      }
+
     }
 
     //cerr << endl;
@@ -821,7 +775,7 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
                                                list<int> &partialClique,
                                                int* vertexSets, int* vertexLookup,
                                                int** neighborsInP, int* numNeighbors,
-                                               int beginX, int beginP, int beginR, int boundary, vector<int> const &bound)
+                                               int beginX, int beginP, int beginR)
 {
 
     stepsSinceLastReportedClique++;
@@ -829,11 +783,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
     // if X is empty and P is empty, process partial clique as maximal
     if(beginX >= beginP && beginP >= beginR)
     {
-        if(boundary){
-          //printf("all boudary vertices\n");
-          //partialClique.pop_back();
-          return;
-        }
         (*cliqueCount)++;
 
         if (stepsSinceLastReportedClique > partialClique.size()) {
@@ -854,8 +803,7 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
 
     // avoid work if P is empty.
     if(beginP >= beginR)
-      return;
-
+        return;
 
     int* myCandidatesToIterateThrough;
     int numCandidatesToIterateThrough;
@@ -869,7 +817,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
 
     // add candiate vertices to the partial clique one at a time and
     // search for maximal cliques
-    //printf("numCandidatesToIterateThrough %d\n", numCandidatesToIterateThrough);
     if(numCandidatesToIterateThrough != 0)
     {
     int iterator = 0;
@@ -886,8 +833,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
 
         // add vertex into partialClique, representing R.
         partialClique.push_back(vertex);
-        int newboundary = boundary && bound[vertex];
-        //printf("push back vertex %d, newboundary: %d\n", vertex, newboundary);
 
         // swap vertex into R and update all data structures
         moveToRDegeneracy( vertex,
@@ -901,7 +846,7 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
                                                  partialClique,
                                                  vertexSets, vertexLookup,
                                                  neighborsInP, numNeighbors,
-                                                 newBeginX, newBeginP, newBeginR, newboundary, bound);
+                                                 newBeginX, newBeginP, newBeginR);
 
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("b ");
@@ -909,7 +854,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
 
         // remove vertex from partialClique
         partialClique.pop_back();
-        //printf("remove vertex %d\n", vertex);
 
         moveFromRToXDegeneracy( vertex,
                                 vertexSets, vertexLookup,
@@ -932,7 +876,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
         vertexSets[beginP] = vertex;
         vertexLookup[vertex] = beginP;
         vertexLookup[vertexSets[vertexLocation]] = vertexLocation;
-        //printf("vertexSets beginP: %d\n", vertexSets[beginP]);
 
         iterator++;
     }

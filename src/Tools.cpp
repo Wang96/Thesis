@@ -18,6 +18,7 @@
 #include <ctime>
 #include <fstream> // ifstream
 //#include <csys/resource.h>
+#include <map>
 
 #include "Tools.h"
 #include <list>
@@ -28,7 +29,6 @@
 #include <sstream>
 #include "MemoryManager.h"
 #include "Algorithm.h"
-#include <map>
 
 using namespace std;
 
@@ -172,7 +172,6 @@ void printClique(int* clique)
 void Tools::printInt(int integer)
 {
     printf("%d", integer);
-
 }
 
 /*! \brief destroy a linked list of integer arrays that have
@@ -250,39 +249,6 @@ vector<list<int>> readInGraphAdjList(int* n, int* m)
     return adjList;
 }
 
-vector<int> checkBoundary(int &n, int &m, string const &fileName)
-{
-    ifstream instream(fileName.c_str());
-    if (instream.good() && !instream.eof()) {
-        string line;
-        std::getline(instream, line);
-////        cout << "Read Line: " << line << endl << flush;
-        while((line.empty() || line[0] == '%') && instream.good() && !instream.eof()) {
-            std::getline(instream, line);
-        }
-        stringstream strm(line);
-        strm >> n >> m;
-    } else {
-        fprintf(stderr, "ERROR: Problem reading number of vertices and edges in file %s\n", fileName.c_str());
-        exit(1);
-    }
-
-    vector<int> boundary;
-    int i = 0;
-    int b;
-    while (i < n){
-      string line;
-      std::getline(instream, line);
-      stringstream strm(line);
-      if(!line.empty()){
-          strm >> b;
-          boundary.push_back(b);
-      }
-      i++;
-    }
-    return boundary;
-}
-
 vector<list<int>> readInGraphAdjListEdgesPerLine(int &n, int &m, string const &fileName)
 {
     ifstream instream(fileName.c_str());
@@ -312,7 +278,7 @@ vector<list<int>> readInGraphAdjListEdgesPerLine(int &n, int &m, string const &f
     int i = 0;
     while (i < n) {
         if (!instream.good()  || instream.eof()) {
-            fprintf(stderr, "ERROR: %d in file %s\n", i+1, fileName.c_str());
+            fprintf(stderr, "ERROR: Problem reading line %d in file %s\n", i+1, fileName.c_str());
             exit(1);
         }
 
@@ -326,16 +292,14 @@ vector<list<int>> readInGraphAdjListEdgesPerLine(int &n, int &m, string const &f
 ////if (debug)        cout << "Actually Read: ";
         strm >> v;
         while (!line.empty() && strm >> v) {
-
             ////if (!strm.good()) break;
 ////if (debug)            cout << v << " ";
             v--;
-            //printf("%d %d %d\n", u ,v,n);
+
             assert(u < n && u > -1);
             assert(v < n && v > -1);
             if (u==v) {
                 fprintf(stderr, "ERROR: Detected loop %d->%d\n", u + 1, v + 1);
-                fprintf(stderr, "Current line %s\n", line.c_str());
                 exit(1);
             }
 
@@ -537,22 +501,16 @@ void Tools::printList(list<int> const &linkedList, map<int,int> &backmap, void (
     printf("printList...\n");
 #endif
     int count = 0;
-    //ofstream outputFile;
-    //outputFile.open("subclique1.graph",ios_base::app);
     for (int const value : linkedList) {
         printFunc(backmap[value+1]);
         //printf(" ");
-        //printFunc(value);
-        //outputFile << backmap[value];
+        //printFunc(value+1);
         if (count != linkedList.size()) {
             printf(" ");
-            //outputFile << " ";
         }
     }
 
     printf("\n");
-    //outputFile << endl;
-    //outputFile.close();
 
 }
 
@@ -720,7 +678,6 @@ vector<int> Tools::ReadMetisOrdering(string const &fileName)
 ////if (debug)        cout << "Read     Line: " << line << endl << flush;
 ////if (debug)        cout << "Actually Read: ";
         if (!line.empty() && strm.good() && !strm.eof()) {
-            strm >> v;
             strm >> v;
             ////if (!strm.good()) break;
 ////if (debug)            cout << v << " ";

@@ -29,6 +29,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <set>
 
 /*! \file DegeneracyAlgorithm.h
 
@@ -50,7 +51,7 @@
 class DegeneracyAlgorithm : public Algorithm
 {
 public:
-    DegeneracyAlgorithm(std::vector<std::list<int>> const &adjacencyList, std::vector<int> const &boundary);//, std::map<int,int> &remap);
+    DegeneracyAlgorithm(std::vector<std::list<int>> const &adjacencyList, std::map<int,int> &ordering, std::map<int,int> &backmap, std::set<int> &partition, std::map<int,int> &remapping);
     virtual ~DegeneracyAlgorithm();
 
     virtual long Run(std::list<std::list<int>> &cliques);
@@ -62,14 +63,16 @@ public:
                                                std::list<int> &partialClique,
                                                int* vertexSets, int* vertexLookup,
                                                int** neighborsInP, int* numNeighbors,
-                                               int beginX, int beginP, int beginR, int boundary, std::vector<int> const &bound);
+                                               int beginX, int beginP, int beginR);
 
-    long listAllMaximalCliquesDegeneracy(std::vector<std::list<int>> const &adjList, int size, std::vector<int> const &boundary);//, std::map<int,int> &remap);
+    long listAllMaximalCliquesDegeneracy(std::vector<std::list<int>> const &adjList, int size, std::map<int,int> &degeneracyOrdering, std::map<int,int> &backmap, std::set<int> &partition, std::map<int,int> &remapping);
 
 private:
     std::vector<std::list<int>> const &m_AdjacencyList;
-    std::vector<int> const &m_boundary;
-    //std::map<int,int> &m_remap;
+    std::map<int,int> &m_ordering;
+    std::map<int,int> &m_backmap;
+    std::set<int> &m_partition;
+    std::map<int,int> &m_remapping;
 };
 
 #endif

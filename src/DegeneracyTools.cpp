@@ -27,6 +27,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -268,6 +269,8 @@ NeighborList** computeDegeneracyOrderList(vector<list<int>> const &adjList, int 
             ordering[vertex]->vertex = vertex;
             ordering[vertex]->orderNumber = numVerticesRemoved;
 
+            printf("vertex: %d, orderNumber: %d\n", vertex, ordering[vertex]->orderNumber);
+
             degree[vertex] = -1;
 
             list<int> const &neighborList = adjList[vertex];
@@ -307,6 +310,151 @@ NeighborList** computeDegeneracyOrderList(vector<list<int>> const &adjList, int 
     return ordering;
 }
 
+NeighborListArray** computeDegeneracyOrderArrayNew(vector<list<int>> const &adjList, int size, map<int,int> &degeneracyOrdering, map<int,int> &backmap, map<int,int> &remapping){
+    vector<NeighborList> vOrdering(size);
+
+    int i = 0;
+
+    int degeneracy = 0;
+
+    // array of lists of vertices, indexed by degree
+    vector<list<int>> verticesByDegree(size);
+
+    // array of lists of vertices, indexed by degree
+    vector<list<int>::iterator> vertexLocator(size);
+
+    vector<int> degree(size);
+
+    for(i=0; i<size; i++)
+    {
+        degree[i] = adjList[i].size();
+        verticesByDegree[degree[i]].push_front(i);
+        vertexLocator[i] = verticesByDegree[degree[i]].begin();
+    }
+
+    int currentDegree = 0;
+
+    int numVerticesRemoved = 0;
+
+    //while(numVerticesRemoved < degeneracyOrdering.size())
+    for(auto& x: degeneracyOrdering)
+    {
+        int const vertex = remapping[x.second]-1;
+        if(vertex != -1){
+        vOrdering[vertex].vertex = vertex;
+        vOrdering[vertex].orderNumber = x.first;
+        //printf("vertex: %d, orderNumber: %d\n", vertex, vOrdering[vertex].orderNumber);
+
+        degree[vertex] = -1;
+
+        list<int> const &neighborList = adjList[vertex];
+
+            for(int const neighbor : neighborList)
+            {
+                if(degree[neighbor]!=-1)
+                {
+                    verticesByDegree[degree[neighbor]].erase(vertexLocator[neighbor]);
+                    (vOrdering[vertex].later).push_back(neighbor);
+
+                    degree[neighbor]--;
+
+                    if(degree[neighbor] != -1)
+                    {
+                        verticesByDegree[degree[neighbor]].push_front(neighbor);
+                        vertexLocator[neighbor] = verticesByDegree[degree[neighbor]].begin();
+                    }
+                }
+                else
+                {
+                    vOrdering[vertex].earlier.push_back(neighbor);
+                }
+            }
+          }
+
+        // if(!verticesByDegree[currentDegree].empty())
+        // {
+        //     degeneracy = max(degeneracy,currentDegree);
+        //
+        //     int const vertex = verticesByDegree[currentDegree].front();
+        //     verticesByDegree[currentDegree].pop_front();
+        //
+        //     vOrdering[vertex].vertex = vertex;
+        //     vOrdering[vertex].orderNumber = degeneracyOrdering[backmap[vertex+1]];
+        //     //printf("vertex: %d, orderNumber: %d\n", vertex, vOrdering[vertex].orderNumber);
+        //
+        //     // Storing degeneracy order information
+        //     // outputFile[0] << vertex+1 << " " << numVerticesRemoved << endl;
+        //     // outputFile[1] << numVerticesRemoved << " " << vertex+1 << endl;
+        //
+        //
+        //     degree[vertex] = -1;
+        //
+        //     list<int> const &neighborList = adjList[vertex];
+        //
+        //     for(int const neighbor : neighborList)
+        //     {
+        //         if(degree[neighbor]!=-1)
+        //         {
+        //             verticesByDegree[degree[neighbor]].erase(vertexLocator[neighbor]);
+        //             (vOrdering[vertex].later).push_back(neighbor);
+        //
+        //             degree[neighbor]--;
+        //
+        //             if(degree[neighbor] != -1)
+        //             {
+        //                 verticesByDegree[degree[neighbor]].push_front(neighbor);
+        //                 vertexLocator[neighbor] = verticesByDegree[degree[neighbor]].begin();
+        //             }
+        //         }
+        //         else
+        //         {
+        //             vOrdering[vertex].earlier.push_back(neighbor);
+        //         }
+        //     }
+        //
+        //     numVerticesRemoved++;
+        //     currentDegree = 0;
+        // }
+        // else
+        // {
+        //     currentDegree++;
+        // }
+
+    }
+
+    NeighborListArray** orderingArray = (NeighborListArray**)Calloc(size, sizeof(NeighborListArray*));
+
+        for(i = 0; i<size;i++)
+        {
+            orderingArray[i] = new NeighborListArray();
+            orderingArray[i]->vertex = vOrdering[i].vertex;
+            orderingArray[i]->orderNumber = vOrdering[i].orderNumber;
+
+            orderingArray[i]->laterDegree = vOrdering[i].later.size();
+            orderingArray[i]->later.resize(orderingArray[i]->laterDegree);
+
+            int j=0;
+            for(int const laterNeighbor : vOrdering[i].later)
+            {
+                orderingArray[i]->later[j++] = laterNeighbor;
+            }
+
+            orderingArray[i]->earlierDegree = vOrdering[i].earlier.size();
+            orderingArray[i]->earlier.resize(orderingArray[i]->earlierDegree);
+
+            j=0;
+            for (int const earlierNeighbor : vOrdering[i].earlier)
+            {
+                orderingArray[i]->earlier[j++] = earlierNeighbor;
+            }
+        }
+        // outputFile[0].close();
+        // outputFile[1].close();
+
+        return orderingArray;
+
+}
+
 /*! \brief
 
     \param list an input graph, represented as an array of linked lists of integers
@@ -335,6 +483,10 @@ NeighborListArray** computeDegeneracyOrderArray(vector<list<int>> const &adjList
 
     vector<int> degree(size);
 
+    // std::ofstream outputFile[2];
+    // outputFile[0].open("degeneracyOrdering.txt");
+    // outputFile[1].open("backOrdering.txt");
+
     // fill each cell of degree lookup table
     // then use that degree to populate the
     // lists of vertices indexed by degree
@@ -361,6 +513,12 @@ NeighborListArray** computeDegeneracyOrderArray(vector<list<int>> const &adjList
 
             vOrdering[vertex].vertex = vertex;
             vOrdering[vertex].orderNumber = numVerticesRemoved;
+            //printf("vertex: %d, orderNumber: %d\n", vertex, vOrdering[vertex].orderNumber);
+
+            // Storing degeneracy order information
+            // outputFile[0] << vertex+1 << " " << numVerticesRemoved << endl;
+            // outputFile[1] << numVerticesRemoved << " " << vertex+1 << endl;
+
 
             degree[vertex] = -1;
 
@@ -423,6 +581,8 @@ NeighborListArray** computeDegeneracyOrderArray(vector<list<int>> const &adjList
             orderingArray[i]->earlier[j++] = earlierNeighbor;
         }
     }
+    // outputFile[0].close();
+    // outputFile[1].close();
 
     return orderingArray;
 }

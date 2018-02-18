@@ -32,10 +32,12 @@ void sortN(std::string const &filename, std::string const &output){
     std::istringstream iss(line);
     while(iss >> num){
       temp.push_back(num);
+      //printf("push_back: %d ", num);
     }
     sort(temp.begin(),temp.end());
     v.push_back(temp);
     temp.clear();
+    //printf("\n");
   }
   sort(v.begin(),v.end());
 
@@ -107,9 +109,9 @@ void sortN(std::string const &filename, std::string const &output){
 // }
 
 bool checkCorrect(std::string const &origin, std::string const &subgraph){
-  sortN(origin, "origin_sort0.graph");
+  //sortN(origin, "origin_sort0.graph");
   sortN(subgraph, "subgraph_sort0.graph");
-  std::fstream file1("origin_sort0.graph");
+  std::fstream file1("../quick-cliques/origin_sort0.graph");
   std::fstream file2("subgraph_sort0.graph");
 
   std::string oline;
@@ -168,7 +170,7 @@ bool checkCorrect(std::string const &origin, std::string const &subgraph){
       iss2 >> current_o;
       //printf("nextline %s\n", oline.c_str());
     }
-    //printf("end? %d\n", end);
+    //printf("current_o: %d, current_s: %d, current: %d\n", current_o, current_s,current);
     std::vector<int>::iterator it;
     for(it = vs.begin();it != vs.end();it++){
       //printf("comparing node %d\n", *it);
@@ -202,6 +204,6 @@ bool checkCorrect(std::string const &origin, std::string const &subgraph){
 }
 
 int main(){
-  bool result = checkCorrect("cliques.graph","newestsubcliques0.graph");
+  bool result = checkCorrect("../quick-cliques/clique.graph","newsubcliques0_1.graph");
   printf("%s\n", result ? "True" : "False");
 }
