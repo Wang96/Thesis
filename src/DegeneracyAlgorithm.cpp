@@ -470,7 +470,7 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
     {
         int vertex = (int)orderingArray[i]->vertex;
 
-        if(find(partition.begin(), partition.end(), backmap[vertex+1]) != partition.end()){
+        if(partition.find(backmap[vertex+1]) != partition.end()){
 
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("%d ", vertex);
