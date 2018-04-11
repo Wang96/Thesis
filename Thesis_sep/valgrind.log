@@ -1,0 +1,217 @@
+==40650== Memcheck, a memory error detector
+==40650== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==40650== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==40650== Command: ./bin/qc --input-file=../../../projects/algo/nwang/newgraph1.graph --algorithm=degeneracy 1 ../../../projects/algo/nwang/partition1.txt ../../../projects/algo/nwang/backtrack1.txt ../../../projects/algo/nwang/remapping1.txt ./degeneracyOrdering.txt
+==40650== Parent PID: 40634
+==40650== 
+==40650== Invalid write of size 4
+==40650==    at 0x40B193: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:418)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0xa90b6ee4 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40A43E: findBestPivotNonNeighborsDegeneracy(int**, int*, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:173)
+==40650==    by 0x40A0C2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:850)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0xa90b6ee4 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40B596: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:693)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40B707: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:721)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid write of size 4
+==40650==    at 0x40B78F: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:725)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40B78D: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:725)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid write of size 4
+==40650==    at 0x40B7B8: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:726)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40A43E: findBestPivotNonNeighborsDegeneracy(int**, int*, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:173)
+==40650==    by 0x40A0C2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:850)
+==40650==    by 0x40A185: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:883)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40A5B5: findBestPivotNonNeighborsDegeneracy(int**, int*, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:218)
+==40650==    by 0x40A0C2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:850)
+==40650==    by 0x40A185: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:883)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x75fbf454 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40B596: moveToRDegeneracy(int, int*, int*, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:693)
+==40650==    by 0x40A148: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:876)
+==40650==    by 0x40A185: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:883)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0xa99be944 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+==40650== Invalid read of size 4
+==40650==    at 0x40A5B5: findBestPivotNonNeighborsDegeneracy(int**, int*, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:218)
+==40650==    by 0x40A0C2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long*, std::__cxx11::list<int, std::allocator<int> >&, int*, int*, int**, int*, int, int, int) (DegeneracyAlgorithm.cpp:850)
+==40650==    by 0x409CA2: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:544)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650==  Address 0x7633ac24 is 0 bytes after a block of size 4 alloc'd
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+==40650== 
+
+valgrind: m_mallocfree.c:303 (get_bszB_as_is): Assertion 'bszB_lo == bszB_hi' failed.
+valgrind: Heap block lo/hi size mismatch: lo = 80, hi = 633348762517512.
+This is probably caused by your program erroneously writing past the
+end of a heap block and corrupting heap metadata.  If you fix any
+invalid writes reported by Memcheck, this assertion failure will
+probably go away.  Please try that before reporting this as a bug.
+
+
+host stacktrace:
+==40650==    at 0x38083F48: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x38084064: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x380841F1: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x38091431: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x38050D13: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x38050FC4: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x380511D2: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x380D4CF3: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+==40650==    by 0x380E3946: ??? (in /usr/lib/valgrind/memcheck-amd64-linux)
+
+sched status:
+  running_tid=1
+
+Thread 1: status = VgTs_Runnable (lwpid 40650)
+==40650==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40650==    by 0x40AF31: fillInPandXForRecursiveCallDegeneracy(int, int, int*, int*, NeighborListArray**, int**, int*, int*, int*, int*, int*, int*, int*) (DegeneracyAlgorithm.cpp:390)
+==40650==    by 0x409C59: DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(std::vector<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > > const&, int, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, std::unordered_set<int, std::hash<int>, std::equal_to<int>, std::allocator<int> >&, std::map<int, int, std::less<int>, std::allocator<std::pair<int const, int> > >&, int) (DegeneracyAlgorithm.cpp:514)
+==40650==    by 0x409715: DegeneracyAlgorithm::Run(std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&) (DegeneracyAlgorithm.cpp:116)
+==40650==    by 0x41888E: RunAndPrintStats(Algorithm*, std::__cxx11::list<std::__cxx11::list<int, std::allocator<int> >, std::allocator<std::__cxx11::list<int, std::allocator<int> > > >&, bool) (Tools.cpp:477)
+==40650==    by 0x41D7AF: main (main.cpp:332)
+
+
+Note: see also the FAQ in the source distribution.
+It contains workarounds to several common problems.
+In particular, if Valgrind aborted or crashed after
+identifying problems in your program, there's a good chance
+that fixing those problems will prevent Valgrind aborting or
+crashing, especially if it happened in m_mallocfree.c.
+
+If that doesn't help, please report this bug to: www.valgrind.org
+
+In the bug report, send all the above text, the valgrind
+version, and what OS and version you are using.  Thanks.
+
