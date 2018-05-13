@@ -20,6 +20,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "Tools.h"
 #include <list>
@@ -100,7 +102,7 @@ int computeDegeneracy(std::vector<std::vector<int>> const &adjList, int size);
 NeighborList** computeDegeneracyOrderList(std::vector<std::list<int>> const &adjList, int size);
 
 NeighborListArray** computeDegeneracyOrderArray(std::vector<std::list<int>> const &adjList, int size);
-NeighborListArray** computeDegeneracyOrderArrayNew(std::vector<std::list<int>> const &adjList, int size, std::map<int,int> &degeneracyOrdering, std::map<int,int> &backmap, std::map<int,int> &remapping);
+NeighborListArray** computeDegeneracyOrderArrayNew(std::vector<std::list<int>> const &adjList, int size, std::unordered_map<int,int> &degeneracyOrdering, std::unordered_map<int,int> &backmap, std::unordered_map<int,int> &remapping, int flag, std::unordered_set<int> &partition);
 
 std::vector<NeighborListArray> computeDegeneracyOrderArray(std::vector<std::vector<int>> &adjArray, int size);
 std::vector<NeighborListArray> computeDegeneracyOrderArrayWithArrays(std::vector<std::vector<int>> &adjArray, int size);

@@ -30,7 +30,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <set>
-
+#include <unordered_set>
+#include <unordered_map>
 /*! \file DegeneracyAlgorithm.h
 
     \brief see DegeneracyAlgorithm.cpp
@@ -51,7 +52,7 @@
 class DegeneracyAlgorithm : public Algorithm
 {
 public:
-    DegeneracyAlgorithm(std::vector<std::list<int>> const &adjacencyList, std::map<int,int> &ordering, std::map<int,int> &backmap, std::set<int> &partition, std::map<int,int> &remapping);
+    DegeneracyAlgorithm(std::vector<std::list<int>> const &adjacencyList, std::unordered_map<int,int> &ordering, std::unordered_map<int,int> &backmap, std::unordered_set<int> &partition, std::unordered_map<int,int> &remapping, int flag);
     virtual ~DegeneracyAlgorithm();
 
     virtual long Run(std::list<std::list<int>> &cliques);
@@ -65,14 +66,15 @@ public:
                                                int** neighborsInP, int* numNeighbors,
                                                int beginX, int beginP, int beginR);
 
-    long listAllMaximalCliquesDegeneracy(std::vector<std::list<int>> const &adjList, int size, std::map<int,int> &degeneracyOrdering, std::map<int,int> &backmap, std::set<int> &partition, std::map<int,int> &remapping);
+    long listAllMaximalCliquesDegeneracy(std::vector<std::list<int>> const &adjList, int size, std::unordered_map<int,int> &degeneracyOrdering, std::unordered_map<int,int> &backmap, std::unordered_set<int> &partition, std::unordered_map<int,int> &remapping, int flag);
 
 private:
     std::vector<std::list<int>> const &m_AdjacencyList;
-    std::map<int,int> &m_ordering;
-    std::map<int,int> &m_backmap;
-    std::set<int> &m_partition;
-    std::map<int,int> &m_remapping;
+    std::unordered_map<int,int> &m_ordering;
+    std::unordered_map<int,int> &m_backmap;
+    std::unordered_set<int> &m_partition;
+    std::unordered_map<int,int> &m_remapping;
+    int m_flag;
 };
 
 #endif

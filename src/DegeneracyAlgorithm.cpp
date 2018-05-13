@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
-#include <map>
+#include <unordered_map>
 #include <set>
 
 #include "Tools.h"
@@ -96,13 +96,14 @@ using namespace std;
 ////static clock_t timeMovingXToP(0);
 ////static clock_t timeFillInPX(0);
 
-DegeneracyAlgorithm::DegeneracyAlgorithm(vector<list<int>> const &adjacencyList, map<int,int> &ordering, map<int,int> &backmap, set<int> &partition, map<int,int> &remapping)
+DegeneracyAlgorithm::DegeneracyAlgorithm(vector<list<int>> const &adjacencyList, unordered_map<int,int> &ordering, unordered_map<int,int> &backmap, unordered_set<int> &partition, unordered_map<int,int> &remapping, int flag)
  : Algorithm("degeneracy")
  , m_AdjacencyList(adjacencyList)
  , m_ordering(ordering)
  , m_backmap(backmap)
  , m_partition(partition)
  , m_remapping(remapping)
+ , m_flag(flag)
 {
 }
 
@@ -112,7 +113,7 @@ DegeneracyAlgorithm::~DegeneracyAlgorithm()
 
 long DegeneracyAlgorithm::Run(list<list<int>> &cliques)
 {
-    return listAllMaximalCliquesDegeneracy(m_AdjacencyList, m_AdjacencyList.size(), m_ordering, m_backmap, m_partition, m_remapping);
+    return listAllMaximalCliquesDegeneracy(m_AdjacencyList, m_AdjacencyList.size(), m_ordering, m_backmap, m_partition, m_remapping, m_flag);
 }
 
 
@@ -343,10 +344,16 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
             vertexLookup[vertexSets[*pNewBeginX]] = neighborLocation;
             vertexSets[*pNewBeginX] = neighbor;
             vertexLookup[neighbor] = *pNewBeginX;
-
+	   
+	/*if(neighbor == 147458){
+	    cout << __LINE__ << " Freed for " << neighbor << '\n' << flush;
+	}*/
             Free(neighborsInP[neighbor]);
             neighborsInP[neighbor] = (int*)Calloc(min(*pNewBeginR-*pNewBeginP,orderingArray[neighbor]->laterDegree), sizeof(int));
-            numNeighbors[neighbor] = 0;
+            /*if(neighbor == 147458){
+		cout << "Memory Allocated for " << neighbor << '\n' << flush;
+	    }*/
+	    numNeighbors[neighbor] = 0;
 
             // fill in NeighborsInP
             int k = 0;
@@ -369,15 +376,26 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
 
         // reset numNeighbors and neighborsInP for this vertex
         j = *pNewBeginP;
+	//cout << "entering while loop\n";
         while(j<*pNewBeginR)
         {
-            int vertexInP = vertexSets[j];
+           
+	    int vertexInP = vertexSets[j];
             numNeighbors[vertexInP] = 0;
-            Free(neighborsInP[vertexInP]);
+            //cout << vertexInP << '\n' << flush;
+	    /*if(vertexInP == 147458){
+		cout << "Freeing: " << vertexInP << '\n' << flush;
+	    }*/
+	    Free(neighborsInP[vertexInP]);
             neighborsInP[vertexInP]=(int*)Calloc( min( *pNewBeginR-*pNewBeginP,
                                                  orderingArray[vertexInP]->laterDegree
                                                + orderingArray[vertexInP]->earlierDegree), sizeof(int));
-
+            
+	    /*if(vertexInP == 147458){
+                cout << __LINE__ << " Memory Allocated for " << vertexInP << " size: " << min( *pNewBeginR-*pNewBeginP,
+                                                 orderingArray[vertexInP]->laterDegree
+                                               + orderingArray[vertexInP]->earlierDegree) << '\n' << flush;
+            }*/
             j++;
         }
 
@@ -398,7 +416,8 @@ inline void fillInPandXForRecursiveCallDegeneracy( int vertex, int orderNumber,
                 {
                     neighborsInP[vertexInP][numNeighbors[vertexInP]] = laterNeighbor;
                     numNeighbors[vertexInP]++;
-                    neighborsInP[laterNeighbor][numNeighbors[laterNeighbor]] = vertexInP;
+                    //cout << "neighborsInP size: " << sizeof(neighborsInP)/sizeof(int) << " current index: " << laterNeighbor << " inner array size: " << sizeof(neighborsInP[laterNeighbor])/sizeof(int) << " current inner index: " << numNeighbors[laterNeighbor] << '\n' << flush;
+		    neighborsInP[laterNeighbor][numNeighbors[laterNeighbor]] = vertexInP;
                     numNeighbors[laterNeighbor]++;
                 }
 
@@ -428,7 +447,7 @@ static unsigned long largestDifference(0);
 static unsigned long numLargeJumps;
 static unsigned long stepsSinceLastReportedClique(0);
 
-long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> const &adjList, int size, map<int,int> &degeneracyOrdering, map<int,int> &backmap, set<int> &partition, map<int,int> &remapping)
+long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> const &adjList, int size, unordered_map<int,int> &degeneracyOrdering, unordered_map<int,int> &backmap, unordered_set<int> &partition, unordered_map<int,int> &remapping, int flag)
 {
     // vertex sets are stored in an array like this:
     // |--X--|--P--|
@@ -437,12 +456,13 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
     // vertex i is stored in vertexSets[vertexLookup[i]]
     int* vertexLookup = (int*)Calloc(size, sizeof(int));
 
+    //cout << "neighborsInP size: " << size << '\n' << flush;
     int** neighborsInP = (int**)Calloc(size, sizeof(int*));
     int* numNeighbors = (int*)Calloc(size, sizeof(int));
 
     // compute the degeneracy order
 ////    clock_t clockStart = clock();
-    NeighborListArray** orderingArray = computeDegeneracyOrderArrayNew(adjList, size, degeneracyOrdering, backmap, remapping);
+    NeighborListArray** orderingArray = computeDegeneracyOrderArrayNew(adjList, size, degeneracyOrdering, backmap, remapping, flag, partition);
 ////    clock_t clockEnd = clock();
 ////    clock_t timeDegeneracyOrder = clockEnd - clockStart;
 
@@ -452,7 +472,10 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
     {
         vertexLookup[i] = i;
         vertexSets[i] = i;
-        neighborsInP[i] = (int*)Calloc(1, sizeof(int));
+	/*if(i == 147458){
+	    cout << __LINE__ << " Memory Allocated for " << i << '\n' << flush;
+	}*/
+	neighborsInP[i] = (int*)Calloc(1, sizeof(int));
         numNeighbors[i] = 1;
         i++;
     }
@@ -465,20 +488,27 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
 
     list<int> partialClique;
 
+    clock_t start = clock();
+    double timer = 0;
     // for each vertex
+    
+    int within_count=0;
+    int boundary_count=0;
+
     for(i=0;i<size;i++)
     {
         int vertex = (int)orderingArray[i]->vertex;
-
-        if(find(partition.begin(), partition.end(), backmap[vertex+1]) != partition.end()){
-
+	
+	clock_t tmp_timer = clock(); 	
+        if(partition.find(backmap[vertex+1]) != partition.end()){
+	//timer += (clock() - tmp_timer) / (double) CLOCKS_PER_SEC;
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("%d ", vertex);
         #endif
 
         // add vertex to partial clique R
         partialClique.push_back(vertex);
-
+	int within = 1;
         int newBeginX, newBeginP, newBeginR;
 
         // set P to be later neighbors and X to be be earlier neighbors
@@ -519,7 +549,18 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
                                                   vertexSets, vertexLookup,
                                                   neighborsInP, numNeighbors,
                                                   newBeginX, newBeginP, newBeginR);
-
+	
+	timer+=(clock()-tmp_timer) / (double)CLOCKS_PER_SEC;
+	
+	if(within){
+		within_count++;
+	}
+	else{
+		boundary_count++;
+	}	
+	//cout << "cliques totally within the block: " << within_count << '\n';
+	//cout << "cliques cross the block: " << boundary_count << '\n';
+	
         #ifdef PRINT_CLIQUES_TOMITA_STYLE
         printf("b ");
         #endif
@@ -529,9 +570,10 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
 
         partialClique.pop_back();
       }
-
     }
-
+    cout << "cliques totally within the block: " << within_count << '\n';
+    cout << "cliques cross the block: " << boundary_count << '\n';
+    //cout << "Total time spent on checking blocks: " << timer << '\n';
     //cerr << endl;
     //cerr << "Largest Difference  : " << largestDifference << endl;
     //cerr << "Num     Differences : " << numLargeJumps << endl;
@@ -542,20 +584,38 @@ long DegeneracyAlgorithm::listAllMaximalCliquesDegeneracy(vector<list<int>> cons
     //cerr << "Time Making X and P : " << ((double)(timeFillInPX)/(double)(CLOCKS_PER_SEC)) << endl;
     //cerr << "Time Degeneracy Ordr: " << ((double)(timeDegeneracyOrder)/(double)(CLOCKS_PER_SEC)) << endl;
 
+    cout << "Time for listing: " << timer << '\n';
+
+    double duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+    cout << "Time for listing all maximal cliques + counting: " << duration << '\n';
+
+    start = clock();
+
     partialClique.clear();
 
+    //cout << "Freeing vertexSets\n" << flush;
     Free(vertexSets);
+    //cout << "Freeing vertexLookup\n" << flush;
     Free(vertexLookup);
 
     for(i = 0; i<size; i++)
     {
         Free(neighborsInP[i]);
+	/*if(i == 147458){
+	    cout << __LINE__ << " Freed for " << i << '\n' << flush;
+	}*/
         delete orderingArray[i];
     }
 
+    //cout << "Freeing orderingArray\n" << flush;
     Free(orderingArray);
+    //cout << "Freeing neighborsInP\n" << flush;
     Free(neighborsInP);
+    //cout << "Freesing numNeighbors\n" << flush;
     Free(numNeighbors);
+
+    //duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+    //cout << "Time spent on freeing arrays: " << duration << '\n';
 
     return cliqueCount;
 }
@@ -796,7 +856,7 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
         stepsSinceLastReportedClique = 0;
 
         ExecuteCallBacks(partialClique);
-        processClique(partialClique);
+        processClique(partialClique);		
 
         return;
     }
@@ -833,6 +893,7 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
 
         // add vertex into partialClique, representing R.
         partialClique.push_back(vertex);
+
 
         // swap vertex into R and update all data structures
         moveToRDegeneracy( vertex,
@@ -886,5 +947,6 @@ void DegeneracyAlgorithm::listAllMaximalCliquesDegeneracyRecursive(long* cliqueC
     // don't need to check for emptiness before freeing, since
     // something will always be there (we allocated enough memory
     // for all of P, which is nonempty)
+    //cout << "Freeing myCandidatesToIterateThrough\n" << flush;
     Free(myCandidatesToIterateThrough);
 }
